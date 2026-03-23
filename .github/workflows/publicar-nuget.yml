@@ -44,14 +44,14 @@ jobs:
       
       - name: Set up NuGet sources
         run: dotnet nuget add source "https://nuget.pkg.github.com/SC-701/index.json" --name "github"
-          --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+          --username ${{ github.actor }} --password ${{ secrets.PAQUETESTOKEN }} --store-password-in-clear-text
 
       - name: Publicar paquetes en github
         working-directory: Seguridad/Seguridad.MiddlewareAutorizacion
         run: |
           find . -name "*.nupkg" | while read pkg; do
             dotnet nuget push "$pkg" \
-              --api-key ${{ secrets.GITHUB_TOKEN }} \
+              --api-key ${{ secrets.PAQUETESTOKEN }} \
               --source "https://nuget.pkg.github.com/SC-701/index.json" \
               --skip-duplicate
           done
