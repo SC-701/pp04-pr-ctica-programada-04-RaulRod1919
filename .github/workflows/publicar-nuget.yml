@@ -43,8 +43,12 @@ jobs:
           dotnet pack --configuration Release --no-build --output ./nupkgs
       
       - name: Set up NuGet sources
-        run: dotnet nuget add source "https://nuget.pkg.github.com/SC-701/index.json" --name "github"
-          --username ${{ github.actor }} --password ${{ secrets.PAQUETESTOKEN }} --store-password-in-clear-text
+        run: |
+          dotnet nuget add source "https://nuget.pkg.github.com/SC-701/index.json" \
+          --name "github" \
+          --username "${{ github.actor }}" \
+          --password "${{ secrets.PAQUETESTOKEN }}" \
+          --store-password-in-clear-text
 
       - name: Publicar paquetes en github
         working-directory: Seguridad/Seguridad.MiddlewareAutorizacion
