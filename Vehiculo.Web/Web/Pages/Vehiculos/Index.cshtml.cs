@@ -1,11 +1,12 @@
 using Abstracciones.Interfaces.Reglas;
 using Abstracciones.Modelos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Web.Pages.Vehiculos
 {
+    [Authorize(Roles = "2")]
     public class IndexModel : PageModel
     {
 
@@ -20,7 +21,7 @@ namespace Web.Pages.Vehiculos
         public async Task OnGet()
         {
             string endpoint = _configuracion.ObtenerMetodo("ApiEndPoints", "ObtenerVehiculos");
-            var cliente = new HttpClient();
+            var cliente = ObtenerClienteConToken();
             var solicitud = new HttpRequestMessage(HttpMethod.Get, endpoint);
             var respuesta = await cliente.SendAsync(solicitud);
             respuesta.EnsureSuccessStatusCode();
@@ -31,6 +32,18 @@ namespace Web.Pages.Vehiculos
                 vehiculos = JsonSerializer.Deserialize<List<VehiculoResponse>>(resultado, opciones);
             }
 
+        }
+
+        private HttpClient ObtenerClienteConToken()
+        {
+            var tokenClaim = HttpContext.User.Claims
+                .FirstOrDefault(c => c.Type == "Token");
+            var cliente = new HttpClient();
+            if (tokenClaim != null)
+                cliente.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer", tokenClaim.Value);
+            return cliente;
         }
     }
 }
