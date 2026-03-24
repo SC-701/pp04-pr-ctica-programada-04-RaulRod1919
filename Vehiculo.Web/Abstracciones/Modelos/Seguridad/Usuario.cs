@@ -7,7 +7,6 @@ namespace Abstracciones.Modelos.Seguridad
 
         [Required]
         public string NombreUsuario { get; set; }
-        [Required]
         public string? PasswordHash { get; set; }
         [Required]
         [EmailAddress]
